@@ -118,6 +118,14 @@ if os.environ.get("CELERY_ENABLE_SPEEDUPS"):
             'amqp.method_framing',
             ["amqp/method_framing.py"],
         ),
+        setuptools.Extension(
+            'amqp.transport',
+            ["amqp/transport.py"],
+        ),
+        setuptools.Extension(
+            'amqp.abstract_channel',
+            ["amqp/abstract_channel.py"],
+        ),
     ]
 else:
     setup_requires = []

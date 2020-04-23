@@ -369,11 +369,11 @@ class SSLTransport(_AbstractTransport):
         if self.sock is not None:
             self.sock = self.sock.unwrap()
 
-    def _read(self, n, initial=False,
-              _errnos=(errno.ENOENT, errno.EAGAIN, errno.EINTR)):
+    def _read(self, n, initial=False):
         # According to SSL_read(3), it can at most return 16kb of data.
         # Thus, we use an internal read buffer like TCPTransport._read
         # to get the exact number of bytes wanted.
+        _errnos = (errno.ENOENT, errno.EAGAIN, errno.EINTR)
         recv = self._quick_recv
         rbuf = self._read_buffer
         try:
@@ -428,8 +428,9 @@ class TCPTransport(_AbstractTransport):
         self._read_buffer = EMPTY_BUFFER
         self._quick_recv = self.sock.recv
 
-    def _read(self, n, initial=False, _errnos=(errno.EAGAIN, errno.EINTR)):
+    def _read(self, n, initial=False):
         """Read exactly n bytes from the socket."""
+        _errnos = (errno.EAGAIN, errno.EINTR)
         recv = self._quick_recv
         rbuf = self._read_buffer
         try:

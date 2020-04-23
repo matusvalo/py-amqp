@@ -17,7 +17,8 @@ from .exceptions import (AMQPDeprecationWarning, ChannelError, ConnectionError,
                          RecoverableConnectionError, ResourceError,
                          error_for_code)
 from .five import array, items, monotonic, range, string, values
-from .method_framing import frame_handler, frame_writer
+from .method_framing import frame_handler as _frame_handler, \
+    frame_writer as _frame_writer
 from .transport import Transport
 
 try:
@@ -194,8 +195,8 @@ class Connection(AbstractChannel):
                  frame_max=None, heartbeat=0, on_open=None, on_blocked=None,
                  on_unblocked=None, confirm_publish=False,
                  on_tune_ok=None, read_timeout=None, write_timeout=None,
-                 socket_settings=None, frame_handler=frame_handler,
-                 frame_writer=frame_writer, **kwargs):
+                 socket_settings=None, frame_handler=None,
+                 frame_writer=None, **kwargs):
         self._connection_id = uuid.uuid4().hex
         channel_max = channel_max or 65535
         frame_max = frame_max or 131072
@@ -237,8 +238,10 @@ class Connection(AbstractChannel):
         self.virtual_host = virtual_host
         self.on_tune_ok = ensure_promise(on_tune_ok)
 
-        self.frame_handler_cls = frame_handler
-        self.frame_writer_cls = frame_writer
+        self.frame_handler_cls = _frame_handler \
+            if frame_handler is None else frame_handler
+        self.frame_writer_cls = _frame_writer \
+            if frame_writer is None else frame_writer
 
         self._handshake_complete = False
 
