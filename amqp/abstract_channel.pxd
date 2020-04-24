@@ -8,7 +8,7 @@ cdef object IGNORED_METHOD_DURING_CHANNEL_CLOSE
 cdef class AbstractChannel():
     cdef public bint is_closing
     cdef public object connection
-    cdef readonly object channel_id
+    cdef public object channel_id
     cdef public bint auto_decode
     cdef dict _pending
     cdef public dict _callbacks
